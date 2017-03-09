@@ -241,8 +241,8 @@ create table if not exists quantity_break(
 
 create table if not exists order_value(
   id uuid DEFAULT uuid_generate_v4(),
-  from_amount bigdecimal,
-  thru_amount bigdecimal,
+  from_amount double precision,
+  thru_amount double precision,
   CONSTRAINT order_value_pk PRIMARY key(id)
 );
 
@@ -256,20 +256,20 @@ create table if not exists price_component(
   id uuid DEFAULT uuid_generate_v4(),
   from_date date not null default CURRENT_DATE,
   thru_date date,
-  price bigdecimal,
-  percent bigdecimal,
+  price double precision,
+  percent double precision,
   comment text,
   geographic_boundary_id uuid,
   party_type uuid,
   product_category_id uuid references product_category,
   quantity_break_id uuid references quantity_break(id),
   order_value_id uuid references order_value(id),
-  sale_type)d uuid references sale_type(id),
+  sale_type uuid references sale_type(id),
   unit_of_measure_id uuid references unit_of_measure,
-  currency_id uuid references unit_of_measure(id)
+  currency_id uuid references unit_of_measure(id),
   party_id uuid,
   product_feature_id uuid references product_feature,
-  product_id uui references product(id),
+  product_id uuid references product(id),
   CONSTRAINT price_component_pk PRIMARY key(id)
 );
 
@@ -288,11 +288,31 @@ create table if not exists estimated_product_cost(
   id uuid DEFAULT uuid_generate_v4(),
   from_date date not null default CURRENT_DATE,
   thru_date date,
-  cost bigdecimal not null,
+  cost double precision not null,
   estimated_product_cost_type_id uuid not null references estimated_product_cost_type(id),
   product_id uuid references product(id),
   product_feature uuid references product_feature(id),
-  geographic_boundary_id uuid references geographic_boundary(id),
+  geographic_boundary_id uuid,
   organization_id uuid,
   CONSTRAINT estimated_product_cost_pk PRIMARY key(id)
+);
+
+create table if not exists product_association_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT product_association_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT product_association_type_pk PRIMARY key(id)
+);
+
+create table if not exists product_association(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default CURRENT_DATE,
+  thru_date date,
+  reason text,
+  quantity_used bigint,
+  instruction text,
+  quantity bigint,
+  product_association_type_id uuid not null references product_association_type(id),
+  from_product uuid not null references product(id),
+  to_product uuid not null references product(id),
+  CONSTRAINT product_association_pk PRIMARY key(id)
 );
