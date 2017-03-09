@@ -44,3 +44,17 @@ create table if not exists product_category_rollup(
   child uuid not null references product_category(id),
   CONSTRAINT product_category_rollup_pk PRIMARY key(id)
 );
+
+create table if not exists good_identification_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT good_identification_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT good_identification_type_id_value_pk PRIMARY key(id)
+);
+
+create table if not exists good_identification_id_value(
+  id uuid DEFAULT uuid_generate_v4(),
+  value text not null CONSTRAINT good_identification_id_value_not_empty CHECK (value <> ''),
+  good_id uuid not null references product(id),
+  good_identification_type_id uuid not null references good_identification_type(id),
+  CONSTRAINT good_identification_id_value_pk PRIMARY key(id)
+);
