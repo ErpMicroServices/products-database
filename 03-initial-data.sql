@@ -27,3 +27,45 @@ insert into good_identification_type (description)
 
 insert into good_identification_type (description)
   values('UPCE');
+
+insert into product_feature_category (description)
+  values('Product Quality');
+
+insert into product_feature_category (description)
+  values('Color');
+
+insert into product_feature_category (description)
+  values('Dimension');
+
+insert into product_feature_category (description)
+  values('Size');
+
+insert into product_feature_category (description)
+  values('Brand');
+
+insert into product_feature_category (description)
+  values('Software Feature');
+
+insert into product_feature_category (description)
+  values('Hardware Feature');
+
+insert into product_feature_category (description)
+  values('Billing Feature');
+
+insert into product_feature_applicability_type (description)
+  values('Required Feature');
+
+insert into product_feature_applicability_type (description)
+  values('Standard Feature');
+
+insert into product_feature_applicability_type (description)
+  values('Optional Feature');
+
+insert into product_feature_applicability_type (description)
+  values('Selectable Feature');
+
+insert into product_feature_interaction_type (description)
+  values('Incompatible');
+
+insert into product_feature_interaction_type (description)
+  values('Dependant');

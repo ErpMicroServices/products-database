@@ -58,3 +58,72 @@ create table if not exists good_identification_id_value(
   good_identification_type_id uuid not null references good_identification_type(id),
   CONSTRAINT good_identification_id_value_pk PRIMARY key(id)
 );
+
+create table if not exists product_feature_category(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT product_feature_category_description_not_empty CHECK (description <> ''),
+  CONSTRAINT product_feature_category_pk PRIMARY key(id)
+);
+
+create table if not exists unit_of_measure(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT unit_of_measure_description_not_empty CHECK (description <> ''),
+  abbreviation text,
+  CONSTRAINT unit_of_measure_pk PRIMARY key(id)
+);
+
+create table if not exists unit_of_measure_converstion(
+  id uuid DEFAULT uuid_generate_v4(),
+  convert_from uuid not null references unit_of_measure(id),
+  convert_to uuid not null references unit_of_measure(id),
+  conversion_factor double precision not null,
+  CONSTRAINT unit_of_measure_converstion_pk PRIMARY key(id)
+);
+
+create table if not exists product_feature_category(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT product_feature_category_description_not_empty CHECK (description <> ''),
+  number_specified bigint,
+  product_feature_category_id uuid not null references product_feature_category(id),
+  unit_of_measure_id uuid references unit_of_measure(id),
+  CONSTRAINT product_feature_category_pk PRIMARY key(id)
+);
+
+create table if not exists product_feature(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT product_feature_category_description_not_empty CHECK (description <> ''),
+  product_feature_category_id uuid not null references product_feature_category(id),
+  unit_of_measure_id uuid references unit_of_measure(id),
+  CONSTRAINT product_feature_pk PRIMARY key(id)
+);
+
+create table if not exists product_feature_applicability_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT product_feature_category_description_not_empty CHECK (description <> ''),
+  CONSTRAINT product_feature_applicability_type_pk PRIMARY key(id)
+);
+
+create table if not exists product_feature_applicability(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default CURRENT_DATE,
+  thru_date date,
+  product_feature_applicability_type_id uuid not null references product_feature_applicability_type(id),
+  product_feature_id uuid not null references product_feature(id),
+  product_id uuid not null references product(id),
+  CONSTRAINT product_feature_applicabilitye_pk PRIMARY key(id)
+);
+
+create table if not exists product_feature_interaction_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT product_feature_interaction_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT product_feature_interaction_type_pk PRIMARY key(id)
+);
+
+create table if not exists product_feature_interaction(
+  id uuid DEFAULT uuid_generate_v4(),
+  between_this uuid not null references product_feature(id),
+  and_this uuid not null references product_feature(id),
+  context_of uuid not null references product(id),
+  product_feature_interaction_type uuid not null references product_feature_interaction_type(id),
+  CONSTRAINT product_feature_interaction_pk PRIMARY key(id)
+);

@@ -9,6 +9,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "docker build --tag erpmicroservices/product-database --rm .",
+    "start:logs": "docker run --publish 5432:5432 --name product-database-1 erpmicroservices/product-database",
     "start": "docker run --detach --publish 5432:5432 --name product-database-1 erpmicroservices/product-database",
     "test": "cucumber-js --compiler es6:babel-core/register  -r ./features ../product-features"
   },
