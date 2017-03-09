@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS product_type(
   description text UNIQUE NOT NULL CONSTRAINT party_type_description_not_empty CHECK (description <> ''),
   CONSTRAINT product_type_pk PRIMARY key(id));
 
-
 CREATE TABLE IF NOT EXISTS product(
   id uuid DEFAULT uuid_generate_v4(),
   name text not null constraint product_name_not_empty check(name <>''),
@@ -164,4 +163,65 @@ create table if not exists supplier_product(
   preference_type_id uuid not null references preference_type(id),
   rating_type_id uuid not null references rating_type(id),
   CONSTRAINT supplier_product_pk PRIMARY key(id)
-)
+);
+
+create table if not exists inventory_item_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT inventory_item_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT inventory_item_type_pk PRIMARY key(id)
+);
+
+create table if not exists inventory_item_status_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT inventory_item_status_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT inventory_item_status_type_type_pk PRIMARY key(id)
+);
+
+create table if not exists lot(
+  id uuid DEFAULT uuid_generate_v4(),
+  creation_date date not null default CURRENT_DATE,
+  quantity bigint default 1,
+  expiration_date date,
+  CONSTRAINT lot_pk PRIMARY key(id)
+);
+
+create table if not exists container_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT container_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT container_type_pk PRIMARY key(id)
+);
+
+create table if not exists container(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text ,
+  container_type_id uuid not null references container_type(id),
+  CONSTRAINT container_pk PRIMARY key(id)
+);
+
+create table if not exists inventory_item (
+  id uuid DEFAULT uuid_generate_v4(),
+  serial_num text,
+  quantity_on_hand bigint,
+  good_id uuid not null,
+  inventory_item_status_type_id uuid,
+  lot_id uuid,
+  container_id uuid,
+  facility_id uuid,
+  CONSTRAINT inventory_item_pk PRIMARY key(id)
+);
+
+create table if not exists reason(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT reason_description_not_empty CHECK (description <> ''),
+  CONSTRAINT reason_pk PRIMARY key(id)
+);
+
+create table if not exists inventory_item_variance(
+  id uuid DEFAULT uuid_generate_v4(),
+  comment text,
+  quantity bigint default 1,
+  physical_inventory_date date not null default CURRENT_DATE,
+  reason_id uuid not null references reason(id),
+  inventory_item_id uuid not null references inventory_item(id),
+  CONSTRAINT inventory_item_variance_pk PRIMARY key(id)
+);

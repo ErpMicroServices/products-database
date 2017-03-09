@@ -69,3 +69,9 @@ insert into product_feature_interaction_type (description)
 
 insert into product_feature_interaction_type (description)
   values('Dependant');
+
+insert into inventory_item_type (description)
+  values('Serialized');
+
+insert into inventory_item_type (description)
+  values('Non-Serialized');
