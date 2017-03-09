@@ -75,3 +75,24 @@ insert into inventory_item_type (description)
 
 insert into inventory_item_type (description)
   values('Non-Serialized');
+
+insert into price_component_type(description)
+  values('Base Price');
+
+insert into price_component_type(description)
+  values('Discount');
+
+insert into price_component_type(description)
+  values('Surcharge');
+
+insert into price_component_type(description)
+  values('Manufacturers Suggested Retail Price');
+
+insert into price_component_type(description)
+  values('One Time Charge');
+
+insert into price_component_type(description)
+  values('Recurring Charge');
+
+insert into price_component_type(description)
+  values('Utilization Charge');

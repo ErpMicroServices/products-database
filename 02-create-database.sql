@@ -225,3 +225,74 @@ create table if not exists inventory_item_variance(
   inventory_item_id uuid not null references inventory_item(id),
   CONSTRAINT inventory_item_variance_pk PRIMARY key(id)
 );
+
+create table if not exists price_component_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT price_component_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT price_component_type_pk PRIMARY key(id)
+);
+
+create table if not exists quantity_break(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_quantity bigint,
+  thru_quantity bigint,
+  CONSTRAINT quantity_break_pk PRIMARY key(id)
+);
+
+create table if not exists order_value(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_amount bigdecimal,
+  thru_amount bigdecimal,
+  CONSTRAINT order_value_pk PRIMARY key(id)
+);
+
+create table if not exists sale_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT sale_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT sale_type_pk PRIMARY key(id)
+);
+
+create table if not exists price_component(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default CURRENT_DATE,
+  thru_date date,
+  price bigdecimal,
+  percent bigdecimal,
+  comment text,
+  geographic_boundary_id uuid,
+  party_type uuid,
+  product_category_id uuid references product_category,
+  quantity_break_id uuid references quantity_break(id),
+  order_value_id uuid references order_value(id),
+  sale_type)d uuid references sale_type(id),
+  unit_of_measure_id uuid references unit_of_measure,
+  currency_id uuid references unit_of_measure(id)
+  party_id uuid,
+  product_feature_id uuid references product_feature,
+  product_id uui references product(id),
+  CONSTRAINT price_component_pk PRIMARY key(id)
+);
+
+create table if not exists estimated_product_cost_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT estimated_product_cost_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT estimated_product_cost_type_pk PRIMARY key(id)
+);
+
+create table if not exists cost_component_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT cost_component_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT cost_component_type_pk PRIMARY key(id)
+);
+create table if not exists estimated_product_cost(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default CURRENT_DATE,
+  thru_date date,
+  cost bigdecimal not null,
+  estimated_product_cost_type_id uuid not null references estimated_product_cost_type(id),
+  product_id uuid references product(id),
+  product_feature uuid references product_feature(id),
+  geographic_boundary_id uuid references geographic_boundary(id),
+  organization_id uuid,
+  CONSTRAINT estimated_product_cost_pk PRIMARY key(id)
+);
