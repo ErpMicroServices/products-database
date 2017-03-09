@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS product(
   sales_discontinuation_date date,
   support_discontinuation_date date,
   comment text,
+  manufactured_by uuid,
   CONSTRAINT product_pk PRIMARY key(id));
 
 CREATE TABLE IF NOT EXISTS product_category(
@@ -127,3 +128,40 @@ create table if not exists product_feature_interaction(
   product_feature_interaction_type uuid not null references product_feature_interaction_type(id),
   CONSTRAINT product_feature_interaction_pk PRIMARY key(id)
 );
+
+create table if not exists reorder_guideline(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default CURRENT_DATE,
+  thru_date date,
+  reorder_quantity int default 1,
+  reorder_level int default 1,
+  based_on_geographic_boundary uuid,
+  based_on_facility uuid,
+  based_on_internal_organization uuid,
+  CONSTRAINT reorder_guideline_pk PRIMARY key(id)
+);
+
+create table if not exists preference_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT preference_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT preference_type_pk PRIMARY key(id)
+);
+
+create table if not exists rating_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT rating_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT rating_type_type_pk PRIMARY key(id)
+);
+
+create table if not exists supplier_product(
+  id uuid DEFAULT uuid_generate_v4(),
+  available_from_date date not null default CURRENT_DATE,
+  available_thru_date date,
+  standard_lead_time interval not null,
+  comment text,
+  product_id uuid not null references product(id),
+  organization_id uuid not null,
+  preference_type_id uuid not null references preference_type(id),
+  rating_type_id uuid not null references rating_type(id),
+  CONSTRAINT supplier_product_pk PRIMARY key(id)
+)
