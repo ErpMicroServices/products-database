@@ -316,3 +316,15 @@ create table if not exists product_association(
   to_product uuid not null references product(id),
   CONSTRAINT product_association_pk PRIMARY key(id)
 );
+
+create table if not exists product_component(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default CURRENT_DATE,
+  thru_date date,
+  quantity_used bigint default 1,
+  instruction text,
+  comment text,
+  in_product uuid not null references product(id),
+  for_product uuid not null references product(id),
+  CONSTRAINT product_component_pk PRIMARY key(id)
+);
