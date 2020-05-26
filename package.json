@@ -8,18 +8,23 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "build": "docker build --tag erpmicroservices/product-database --rm .",
-    "start": "docker run --publish 5432:5432 --name product-database-1 erpmicroservices/product-database",
-    "test": "cucumber-js --compiler es6:babel-core/register  -r ./features ../product-features"
+    "build": "npm run build:database; npm run build:docker",
+    "build:docker": "docker build --tag erpmicroservices/products-database --rm .",
+    "build:database": "mkdir -p build;liquibase-3.5.3-bin/liquibase --changeLogFile=./database_change_log.yml --url='offline:postgresql' updateSql > build/database_up.sql",
+    "clean": "rm -rf build; rm -rf generated-sql;yes | docker rmi erpmicroservices/products-database; yes | docker volume prune",
+    "update_database": "liquibase-3.5.3-bin/liquibase --changeLogFile=./database_change_log.yml --url='jdbc:postgresql://localhost/products-database' --username=products-database --password=products-database update",
+    "push": "docker push erpmicroservices/products-database:latest",
+    "start": "docker run --publish 5432:5432 --name products-database erpmicroservices/products-database",
+    "test": "cucumber-js --tags @party_database  --require-module @babel/register --require-module @babel/polyfill  -r ./features ../products-features"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ErpMicroServices/product-database.git"
+    "url": "git+https://github.com/ErpMicroServices/products-database.git"
   },
   "bugs": {
-    "url": "https://github.com/ErpMicroServices/product-database/issues"
+    "url": "https://github.com/ErpMicroServices/products-database/issues"
   },
-  "homepage": "https://github.com/ErpMicroServices/product-database#readme",
+  "homepage": "https://github.com/ErpMicroServices/products-database#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "cucumber": "^2.0.0-rc.7",
