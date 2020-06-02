@@ -34,7 +34,7 @@ create table if not exists market_interest(
   from_date date not null default current_date,
   thru_date date,
   product_category_id uuid not null references product_category(id),
-  party_classification_type uuid not null,
+  party_classification_type_id uuid not null,
   CONSTRAINT market_interest_pk PRIMARY key(id)
 );
 
@@ -51,12 +51,12 @@ create table if not exists good_identification_type(
   CONSTRAINT good_identification_type_id_value_pk PRIMARY key(id)
 );
 
-create table if not exists good_identification_id_value(
+create table if not exists good_identification(
   id uuid DEFAULT uuid_generate_v4(),
-  value text not null CONSTRAINT good_identification_id_value_not_empty CHECK (value <> ''),
+  value text not null CONSTRAINT good_identification_not_empty CHECK (value <> ''),
   good_id uuid not null references product(id),
   good_identification_type_id uuid not null references good_identification_type(id),
-  CONSTRAINT good_identification_id_value_pk PRIMARY key(id)
+  CONSTRAINT good_identification_pk PRIMARY key(id)
 );
 
 create table if not exists product_feature_category(
@@ -76,7 +76,7 @@ create table if not exists unit_of_measure_converstion(
   id uuid DEFAULT uuid_generate_v4(),
   convert_from uuid not null references unit_of_measure(id),
   convert_to uuid not null references unit_of_measure(id),
-  conversion_factor double precision not null,
+  conversion_factor numeric(17,2) not null,
   CONSTRAINT unit_of_measure_converstion_pk PRIMARY key(id)
 );
 
@@ -241,8 +241,8 @@ create table if not exists quantity_break(
 
 create table if not exists order_value(
   id uuid DEFAULT uuid_generate_v4(),
-  from_amount double precision,
-  thru_amount double precision,
+  from_amount numeric(17,2),
+  thru_amount numeric(17,2),
   CONSTRAINT order_value_pk PRIMARY key(id)
 );
 
@@ -256,8 +256,8 @@ create table if not exists price_component(
   id uuid DEFAULT uuid_generate_v4(),
   from_date date not null default CURRENT_DATE,
   thru_date date,
-  price double precision,
-  percent double precision,
+  price numeric(17,2),
+  percent numeric(3,2),
   comment text,
   geographic_boundary_id uuid,
   party_type uuid,
@@ -288,10 +288,10 @@ create table if not exists estimated_product_cost(
   id uuid DEFAULT uuid_generate_v4(),
   from_date date not null default CURRENT_DATE,
   thru_date date,
-  cost double precision not null,
+  cost numeric(17,2) not null,
   estimated_product_cost_type_id uuid not null references estimated_product_cost_type(id),
-  product_id uuid references product(id),
-  product_feature uuid references product_feature(id),
+  product_id uuid not null references product(id),
+  product_feature_id uuid references product_feature(id),
   geographic_boundary_id uuid,
   organization_id uuid,
   CONSTRAINT estimated_product_cost_pk PRIMARY key(id)
